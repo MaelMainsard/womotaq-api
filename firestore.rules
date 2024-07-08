@@ -1,0 +1,92 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function canEditMoshelStory(storyId) {
+    	let document = get(/databases/$(database)/documents/moshelStory/$(storyId));
+      let role = document.data.roles[request.auth.uid];
+      return document != null && (role == 'author' || role == 'contributor');
+    }
+    function isAuthorOfMoshelStory(storyId) {
+    	let document = get(/databases/$(database)/documents/moshelStory/$(storyId));
+      return document != null && document.data.roles[request.auth.uid] == 'author';
+    }
+    function isCreatorOfMoshelGame(gameId) {
+    	let document = get(/databases/$(database)/documents/moshelGame/$(gameId));
+      return document != null && request.auth.uid == document.data.creatorId;
+    }
+    function isSuperAdmin() {
+    	let document = get(/databases/$(database)/documents/user/$(request.auth.uid));
+      return document != null && document.data.isSuperAdmin == true;
+    }
+    function memberOfRelationship(relationshipId) {
+    	let document = get(/databases/$(database)/documents/relationship/$(relationshipId));
+      return document != null && request.auth.uid in document.data.users.keys();
+    }
+    function isPlayerOfLiveGame(liveGameId) {
+    	let document = get(/databases/$(database)/documents/liveGame/$(liveGameId));
+      return document != null && (request.auth.uid == document.data.whiteId || request.auth.uid == document.data.blackId);
+    }
+    match /challenge/{challengeId} {
+      allow create: if request.auth != null && request.resource != null && request.auth.uid == request.resource.data.authorId;
+    	allow read;
+      allow update, delete: if request.auth != null;  
+    }
+    match /liveGame/{liveGameId} {
+    	allow read;
+      allow create, update: if request.auth != null && request.resource != null && (request.auth.uid == request.resource.data.whiteId || request.auth.uid == request.resource.data.blackId);
+      allow delete: if request.auth != null && (isPlayerOfLiveGame(liveGameId) || isSuperAdmin());
+    }
+    match /moshelGame/{gameId} {
+    	allow read;
+      allow create: if request.auth != null && request.resource != null && request.resource.data.creatorId == request.auth.uid;
+      // note : not very secure
+      allow update: if request.auth != null;
+      allow delete: if request.auth != null && isCreatorOfMoshelGame(gameId);
+    }
+    match /moshelStory/{storyId} {
+    	allow read;
+      allow create: if request.auth != null && request.resource != null && request.resource.data.roles[request.auth.uid] == 'author';
+      allow update: if request.auth != null && canEditMoshelStory(storyId);
+      allow delete: if request.auth != null && isAuthorOfMoshelStory(storyId);
+      match /interactiveDialog/{nodeId} {
+      	allow create: if request.auth != null && isAuthorOfMoshelStory(storyId);
+        allow read, update: if request.auth != null && canEditMoshelStory(storyId);
+        allow delete: if request.auth != null && isAuthorOfMoshelStory(storyId);
+      }
+    }
+    match /pastGame/{pastGameId} {
+    	allow read;
+      // update is required for the revengeId edition
+      allow update, create: if request.auth != null && request.resource != null && (request.auth.uid == request.resource.data.whiteId || request.auth.uid == request.resource.data.blackId);
+    }
+    match /relationship/{relationshipId} {
+    	allow read;
+      allow create, update: if request.auth != null && request.resource != null && request.auth.uid in request.resource.data.users.keys();
+      allow delete: if request.auth != null && memberOfRelationship(relationshipId);
+      match /message/{messageId} {
+        allow create, read, update, delete: if request.auth != null && memberOfRelationship(relationshipId);
+      }
+    }
+    // For group queries
+    match /{path=**}/message/{messageId} {
+      allow list: if request.auth != null && (request.auth.uid in resource.data.sentTo || request.auth.uid in resource.data.deliveredTo);
+    }
+    match /settings/{userId} {
+    	allow read;
+      allow create, update, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    match /user/{userId} {
+    	allow read;
+      allow create, update, delete: if request.auth != null && request.auth.uid == userId;
+      match /challengeFilter/{challengeFilterId} {
+      	allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+      match /report/{reporterId} {
+      	allow create, update: if request.auth != null && request.auth.uid == reporterId;
+        allow read: if false;
+        allow delete: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+  }
+}
