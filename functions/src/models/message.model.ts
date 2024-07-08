@@ -3,30 +3,30 @@ import { MessageType } from '../enums/message_type.enum';
 export class MessageModel {
     id: string;
     replyTo: string | null; // If this message is not a reply : Field is null.
-    relationshipId: string;
+    groupId: string;
     authorId: string;
     type: MessageType;
     text: string;
     sentAt: Date;
-    sentTo: string | null; // If this message is in a room : Field is null
-    deliveredTo: string | null; // If this message is in a room : Field is null
+    sentTo: string[];
+    deliveredTo: string[];
     seenBy: string[];
 
     constructor(
         id: string,
         replyTo: string | null,
-        relationshipId: string,
+        groupId: string,
         authorId: string,
         type: MessageType,
         text: string,
         sentAt: Date,
-        sentTo: string | null,
-        deliveredTo: string | null,
+        sentTo: string[],
+        deliveredTo: string[],
         seenBy: string[]
     ) {
         this.id = id;
         this.replyTo = replyTo;
-        this.relationshipId = relationshipId;
+        this.groupId = groupId;
         this.authorId = authorId;
         this.type = type;
         this.text = text;
