@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin';
-import {RelationshipInterface} from "../models/relationship/relationship.interface";
+import {RelationshipModel} from "../models/relationship/relationship.model";
+import {RelationshipEntity} from "../models/relationship/relationship.entity";
 
 admin.apps.length ? admin.app() : admin.initializeApp();
 const db = admin.firestore();
@@ -8,10 +9,10 @@ export class RelationshipRepository {
 
     private relationshipCollection = db.collection('relationship');
 
-    async getRelationShipById(groupId: string): Promise<RelationshipInterface | null> {
+    async getRelationShipById(groupId: string): Promise<RelationshipModel | null> {
         const doc = await this.relationshipCollection.doc(groupId).get();
         if (doc.exists) {
-            return doc.data() as RelationshipInterface;
+            return RelationshipModel.fromEntity(RelationshipEntity.fromDocument(doc.data()!));
         }
         return null;
     }

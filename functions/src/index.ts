@@ -8,28 +8,18 @@
  */
 
 import {onRequest} from "firebase-functions/v2/https";
-import * as logger from "firebase-functions/logger";
+// import * as logger from "firebase-functions/logger";
 
-import {plainToInstance} from 'class-transformer';
-import { validate } from 'class-validator';
-import { NewMessageDto } from './dto/newMessage.dto';
-
-
-
+import {RelationshipRepository} from "./repository/relationship.repository";
+import {RelationshipModel} from "./models/relationship/relationship.model";
+import {ValidateMiddleware} from "./middlewares/validator.middleware";
+import {NewMessageDto} from "./dto/newMessage.dto";
 
 
-// @ts-ignore
-export const helloWorld = onRequest(async (request, response) => {
+export const helloWorld = onRequest(ValidateMiddleware(NewMessageDto,request, response) => {
 
-  const createUserDto = plainToInstance(NewMessageDto, request.body);
+  const relationshipRepository: RelationshipRepository = new RelationshipRepository();
+  const relationship: RelationshipModel | null = await relationshipRepository.getRelationShipById(request.body.groupId);
 
-  // Valider les données
-  const errors = await validate(createUserDto);
-  if (errors.length > 0) {
-    // S'il y a des erreurs, retourner une réponse avec les erreurs
-    return response.status(400).json({errors: errors.map(err => err.constraints)});
-  }
-
-  logger.info("Hello logs!", {structuredData: true});
-  response.send("Hello from Firebase!");
+  response.send(relationship!.toEntity().toString());
 });

@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin';
-import { UserInterface} from "../models/user/user.interface";
+import {UserModel} from "../models/user/user.model";
+import {UserEntity} from "../models/user/user.entity";
 
 admin.apps.length ? admin.app() : admin.initializeApp();
 const db = admin.firestore();
@@ -8,10 +9,10 @@ export class UserRepository {
 
     private userCollection = db.collection('user');
 
-    async getUserById(authorId: string): Promise<UserInterface | null> {
+    async getUserById(authorId: string): Promise<UserModel | null> {
         const doc = await this.userCollection.doc(authorId).get();
         if (doc.exists) {
-            return doc.data() as UserInterface;
+            return UserModel.fromEntity(UserEntity.fromDocument(doc.data()!));
         }
         return null;
     }
