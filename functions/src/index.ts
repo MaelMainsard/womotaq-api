@@ -14,8 +14,6 @@ import {plainToInstance} from 'class-transformer';
 import { validate } from 'class-validator';
 import { NewMessageDto } from './dto/newMessage.dto';
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
 
 // @ts-ignore
 export const helloWorld = onRequest(async (request, response) => {

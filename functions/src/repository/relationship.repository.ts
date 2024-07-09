@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin';
 import {RelationshipInterface} from "../models/relationship/relationship.interface";
 
-admin.initializeApp();
+admin.apps.length ? admin.app() : admin.initializeApp();
 const db = admin.firestore();
 
 export class RelationshipRepository {

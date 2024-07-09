@@ -1,27 +1,20 @@
 import { IsString, IsNotEmpty } from 'class-validator';
 import {CheckGroupIdExist} from "../validators/validGroupId/checkGroupIdExist";
+import {CheckAuthorIdExist} from "../validators/validAuthorId/checkAuthorIdExist";
 
 export class NewMessageDto {
     replyTo: string | null;
 
-    //This field is required
-
-    //This field must be a string
-    //This field must exist in relationship table or roomId
     @IsString()
     @IsNotEmpty()
     @CheckGroupIdExist()
     groupId: string;
 
-    //This field is required
-    //This field must be a string
-    //This field must exist in the user table
     @IsString()
     @IsNotEmpty()
+    @CheckAuthorIdExist()
     authorId: string;
 
-    //This field is required
-    //This field must be a string
     @IsString()
     @IsNotEmpty()
     text: string;
