@@ -15,6 +15,9 @@ import { validate } from 'class-validator';
 import { NewMessageDto } from './dto/newMessage.dto';
 
 
+
+
+
 // @ts-ignore
 export const helloWorld = onRequest(async (request, response) => {
 
