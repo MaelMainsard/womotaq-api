@@ -12,7 +12,7 @@ import * as logger from "firebase-functions/logger";
 
 import {plainToInstance} from 'class-transformer';
 import { validate } from 'class-validator';
-import { NewMessageDto } from './dto/new_message.dto';
+import { NewMessageDto } from './dto/newMessage.dto';
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript

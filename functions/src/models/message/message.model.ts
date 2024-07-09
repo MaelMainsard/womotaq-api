@@ -1,6 +1,7 @@
-import { MessageType } from '../enums/message_type.enum';
+import { MessageType } from '../../enums/messageType.enum';
+import {MessageInterface} from "./message.interface";
 
-export class MessageModel {
+export class MessageModel implements MessageInterface {
     id: string;
     replyTo: string | null; // If this message is not a reply : Field is null.
     groupId: string;
