@@ -1,23 +1,24 @@
-import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
-import {NextFunction} from "express";
+import { Request, Response, NextFunction } from 'express';
+import { validationResult } from 'express-validator';
 
-export const validateBody = (dtoClass: any) => {
-    return async (req: Request, res: Response, next: NextFunction) => {
-        const dtoInstance = plainToInstance(dtoClass, req.body);
-        const errors = await validate(dtoInstance as object);
 
-        if (errors.length > 0) {
+export const validate = (req: Request, res: Response, next: NextFunction) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        return next();
+    }
+    const extractedErrors: string[] = [];
 
-            // @ts-ignore
-            return res.status(400).json({
-                errors: errors.map((error) => ({
-                    property: error.property,
-                    constraints: error.constraints,
-                })),
-            });
+    errors.array().map(err => {
+        if(err.type === "field" && err.path !== ""){
+            extractedErrors.push(`${err.path} : ${err.msg}`);
         }
+        else {
+            extractedErrors.push(err.msg);
+        }
+    });
 
-        next();
-    };
+    return res.status(400).json({
+        errors: extractedErrors,
+    });
 };

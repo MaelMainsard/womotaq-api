@@ -17,8 +17,6 @@
   "main": "lib/index.js",
   "dependencies": {
     "@types/express-validator": "^3.0.0",
-    "class-transformer": "^0.5.1",
-    "class-validator": "^0.14.1",
     "express-validator": "^7.1.0",
     "firebase-admin": "^12.1.0",
     "firebase-functions": "^5.0.0"
