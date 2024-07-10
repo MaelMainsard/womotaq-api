@@ -1,6 +1,7 @@
 import { MessageType } from '../../enums/messageType.enum';
 import {MessageInterface} from "./message.interface";
 import {MessageEntity} from "./message.entity";
+import {MessagePlace} from "../../enums/messagePlace.enum";
 
 export class MessageModel implements MessageInterface {
     id: string;
@@ -8,18 +9,20 @@ export class MessageModel implements MessageInterface {
     groupId: string;
     authorId: string;
     type: MessageType;
+    place: MessagePlace;
     text: string;
     sentAt: Date;
     sentTo: string[];
     deliveredTo: string[];
     seenBy: string[];
 
-    constructor({id, replyTo, groupId, authorId, type, text, sentAt, sentTo, deliveredTo, seenBy}: MessageInterface) {
+    constructor({id, replyTo, groupId, authorId, type, place, text, sentAt, sentTo, deliveredTo, seenBy}: MessageInterface) {
         this.id = id;
         this.replyTo = replyTo;
         this.groupId = groupId;
         this.authorId = authorId;
         this.type = type;
+        this.place = place;
         this.text = text;
         this.sentAt = sentAt;
         this.sentTo = sentTo;
@@ -34,6 +37,7 @@ export class MessageModel implements MessageInterface {
             groupId: this.groupId,
             authorId: this.authorId,
             type: this.type,
+            place: this.place,
             text: this.text,
             sentAt: this.sentAt,
             sentTo: this.sentTo,
@@ -49,6 +53,7 @@ export class MessageModel implements MessageInterface {
             groupId: entity.groupId,
             authorId: entity.authorId,
             type: entity.type,
+            place: entity.place,
             text: entity.text,
             sentAt: entity.sentAt,
             sentTo: entity.sentTo,

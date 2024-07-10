@@ -1,5 +1,6 @@
 import {MessageInterface} from "./message.interface";
 import {MessageType} from "../../enums/messageType.enum";
+import {MessagePlace} from "../../enums/messagePlace.enum";
 
 export class MessageEntity implements MessageInterface {
     id: string;
@@ -7,18 +8,20 @@ export class MessageEntity implements MessageInterface {
     groupId: string;
     authorId: string;
     type: MessageType;
+    place: MessagePlace;
     text: string;
     sentAt: Date;
     sentTo: string[];
     deliveredTo: string[];
     seenBy: string[];
 
-    constructor({id, replyTo, groupId, authorId, type, text, sentAt, sentTo, deliveredTo, seenBy}: MessageInterface) {
+    constructor({id, replyTo, groupId, authorId, type, place, text, sentAt, sentTo, deliveredTo, seenBy}: MessageInterface) {
         this.id = id;
         this.replyTo = replyTo;
         this.groupId = groupId;
         this.authorId = authorId;
         this.type = type;
+        this.place = place;
         this.text = text;
         this.sentAt = sentAt;
         this.sentTo = sentTo;
@@ -34,6 +37,7 @@ export class MessageEntity implements MessageInterface {
             'groupId': this.groupId,
             'authorId': this.authorId,
             'type': this.type,
+            'place': this.place,
             'text': this.text,
             'sentAt': this.sentAt,
             'sentTo': this.sentTo,
@@ -49,6 +53,7 @@ export class MessageEntity implements MessageInterface {
             groupId: doc['groupId'] as string,
             authorId: doc['authorId'] as string,
             type: doc['type'] as MessageType,
+            place: doc['place'] as MessagePlace,
             text: doc['text'] as string,
             sentAt: doc['sentAt'] as Date,
             sentTo: doc['sentTo'] as string[],
@@ -64,6 +69,7 @@ export class MessageEntity implements MessageInterface {
         groupId: ${this.groupId},
         authorId: ${this.authorId},
         type: ${this.type},
+        place: ${this.place},
         text: ${this.text},
         sentAt: ${this.sentAt},
         sentTo: ${this.sentTo},

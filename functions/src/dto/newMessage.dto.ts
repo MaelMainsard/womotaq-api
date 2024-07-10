@@ -25,4 +25,13 @@ export class NewMessageDto {
         this.authorId = authorId;
         this.text = text;
     }
+
+    static toObject(body: any) {
+        return new NewMessageDto(
+            replyTo: body.replyTo,
+            groupId: body.groupId,
+            authorId: body.authorId,
+
+        )
+    }
 }
