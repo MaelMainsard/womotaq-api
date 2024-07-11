@@ -1,7 +1,7 @@
 import { body } from 'express-validator';
 import { MessagePlace} from "../enums/messagePlace.enum";
-import { validGroupId } from "./validGroupId.validator";
-import {validAuthorId} from "./validAuthorId.validator";
+// import { validGroupId } from "./validGroupId.validator";
+// import {validAuthorId} from "./validAuthorId.validator";
 
 export const newMessageValidator = () => {
     return [
@@ -13,8 +13,8 @@ export const newMessageValidator = () => {
             .isString().withMessage('Field must be a string'),
         body('authorId')
             .notEmpty().withMessage('Field is required').bail()
-            .isString().withMessage('Field must be a string').bail()
-            .custom(validAuthorId).withMessage("The author doesn't exist ( authorId was not found )"),
+            .isString().withMessage('Field must be a string').bail(),
+        //    .custom(validAuthorId).withMessage("The author doesn't exist ( authorId was not found )"),
         body('text')
             .notEmpty().withMessage('Field is required').bail()
             .isString().withMessage('Field must be a string'),
@@ -22,6 +22,6 @@ export const newMessageValidator = () => {
             .notEmpty().withMessage('Field is required').bail()
             .isString().withMessage('Field must be a string').bail()
             .isIn(Object.values(MessagePlace)).withMessage('Field is not in the list'),
-        body().custom(validGroupId)
+        //body().custom(validGroupId)
     ];
 };

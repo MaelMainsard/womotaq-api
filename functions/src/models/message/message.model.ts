@@ -2,27 +2,27 @@ import { MessageType } from '../../enums/messageType.enum';
 import {MessagePlace} from "../../enums/messagePlace.enum";
 
 export class MessageModel {
-    id: string;
+    id: string | null;
     replyTo: string | null; // If this message is not a reply : Field is null.
     groupId: string;
     authorId: string;
     type: MessageType;
     place: MessagePlace;
     text: string;
-    sentAt: Date;
+    sentAt: string;
     sentTo: string[];
     deliveredTo: string[];
     seenBy: string[];
 
     constructor(
-        id:string,
+        id:string | null,
         replyTo:string | null,
         groupId:string,
         authorId:string,
         type:MessageType,
         place:MessagePlace,
         text:string,
-        sentAt:Date,
+        sentAt:string,
         sentTo:string[],
         deliveredTo:string[],
         seenBy:string[]
@@ -65,7 +65,7 @@ export class MessageModel {
             doc['type'] as MessageType,
             doc['place'] as MessagePlace,
             doc['text'] as string,
-            doc['sentAt'] as Date,
+            doc['sentAt'] as string,
             doc['sentTo'] as string[],
             doc['deliveredTo'] as string[],
             doc['seenBy'] as string[]

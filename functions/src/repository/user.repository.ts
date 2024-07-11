@@ -1,6 +1,7 @@
 import * as admin from 'firebase-admin';
 import {UserModel} from "../models/user/user.model";
 
+
 admin.apps.length ? admin.app() : admin.initializeApp();
 const db = admin.firestore();
 

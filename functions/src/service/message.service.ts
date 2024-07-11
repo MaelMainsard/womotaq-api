@@ -1,5 +1,4 @@
 import {MessageModel} from "../models/message/message.model";
-import { v4 as uuidv4 } from 'uuid';
 import {MessageType} from "../enums/messageType.enum";
 import { MessageRepository } from "../repository/message.repository";
 
@@ -10,14 +9,14 @@ export class MessageService {
         const messageRepository: MessageRepository = new MessageRepository(data.place,data.groupId);
 
         const message: MessageModel = new MessageModel(
-            uuidv4(),
+            null,
             data.replyTo === undefined ? null : data.replyTo,
             data.groupId,
             data.authorId,
             this.getMessageType(data.text),
             data.place,
             data.text,
-            new Date(),
+            new Date().toISOString(),
             [],
             [],
             []

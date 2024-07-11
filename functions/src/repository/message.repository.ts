@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin';
-// import { UserInterface} from "../models/user/user.interface";
 import {MessageModel} from "../models/message/message.model";
 import {MessagePlace} from "../enums/messagePlace.enum";
+
 
 admin.apps.length ? admin.app() : admin.initializeApp();
 const db = admin.firestore();
@@ -20,7 +20,9 @@ export class MessageRepository {
     }
 
     async addNewMessage(message: MessageModel): Promise<void> {
-        await this.messageCollection.doc(message.id).set(message.toDocument());
+        const doc:any = this.messageCollection.doc()
+        message.id = doc.id;
+        doc.set(message.toDocument());
     }
 
 

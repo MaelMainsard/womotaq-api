@@ -1,6 +1,7 @@
 import * as admin from 'firebase-admin';
 import {RoomModel} from "../models/room/room.model";
 
+
 admin.apps.length ? admin.app() : admin.initializeApp();
 const db = admin.firestore();
 
