@@ -9,20 +9,19 @@ export const newMessageValidator = () => {
             .optional()
             .isString().withMessage('Field must be a string'),
         body('groupId')
-            .isString().withMessage('Field must be a string')
-            .notEmpty().withMessage('Field is required'),
+            .notEmpty().withMessage('Field is required').bail()
+            .isString().withMessage('Field must be a string'),
         body('authorId')
-            .isString().withMessage('Field must be a string')
-            .notEmpty().withMessage('Field is required')
+            .notEmpty().withMessage('Field is required').bail()
+            .isString().withMessage('Field must be a string').bail()
             .custom(validAuthorId).withMessage("The author doesn't exist ( authorId was not found )"),
         body('text')
-            .isString().withMessage('Field must be a string')
-            .notEmpty().withMessage('Field is required'),
+            .notEmpty().withMessage('Field is required').bail()
+            .isString().withMessage('Field must be a string'),
         body('place')
-            .isString().withMessage('Field must be a string')
-            .notEmpty().withMessage('Field is required')
+            .notEmpty().withMessage('Field is required').bail()
+            .isString().withMessage('Field must be a string').bail()
             .isIn(Object.values(MessagePlace)).withMessage('Field is not in the list'),
-        body()
-            .custom(validGroupId)
+        body().custom(validGroupId)
     ];
 };
