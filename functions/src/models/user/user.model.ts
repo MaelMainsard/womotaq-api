@@ -1,5 +1,4 @@
 import {UserInterface} from "./user.interface";
-import {UserEntity} from "./user.entity";
 
 export class UserModel implements UserInterface{
     createdAt: Date;
@@ -18,25 +17,36 @@ export class UserModel implements UserInterface{
         this.usernameLowercase = usernameLowercase;
     }
 
-    toEntity(): UserEntity {
-        return new UserEntity({
-            createdAt: this.createdAt,
-            isConnected: this.isConnected,
-            isSuperAdmin: this.isSuperAdmin,
-            photo: this.photo,
-            username: this.username,
-            usernameLowercase: this.usernameLowercase
+    toDocument(): Record<string, any> {
+        return {
+            'createdAt': this.createdAt,
+            'isConnected': this.isConnected,
+            'isSuperAdmin': this.isSuperAdmin,
+            'photo': this.photo,
+            'username': this.username,
+            'usernameLowercase': this.usernameLowercase,
+        };
+    }
+
+    static fromDocument(doc: Record<string, any>): UserModel {
+        return new UserModel({
+            createdAt: doc['createdAt'] as Date,
+            isConnected: doc['isConnected'] as boolean,
+            isSuperAdmin: doc['isSuperAdmin'] as boolean,
+            photo: doc['photo'] as string,
+            username: doc['username'] as string,
+            usernameLowercase: doc['usernameLowercase'] as string,
         });
     }
 
-    static fromEntity(entity: UserEntity): UserModel {
-        return new UserModel({
-            createdAt: entity.createdAt,
-            isConnected: entity.isConnected,
-            isSuperAdmin: entity.isSuperAdmin,
-            photo: entity.photo,
-            username: entity.username,
-            usernameLowercase: entity.usernameLowercase
-        });
+    toString(): string {
+        return `RoomEntity: {
+        createdAt: ${this.createdAt},
+        isConnected: ${this.isConnected},
+        isSuperAdmin: ${this.isSuperAdmin},
+        photo: ${this.photo},
+        username: ${this.username},
+        usernameLowercase: ${this.usernameLowercase},
+      }`;
     }
 }

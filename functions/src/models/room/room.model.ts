@@ -1,6 +1,5 @@
 import {RoomInterface} from "./room.interface";
 import {UserInRoomStatus} from "../../enums/userInRoomStatus.enum";
-import {RoomEntity} from "./room.entity";
 
 export class RoomModel implements RoomInterface {
     id: string;
@@ -19,25 +18,36 @@ export class RoomModel implements RoomInterface {
         this.lastChatUpdate = lastChatUpdate;
     }
 
-    toEntity(): RoomEntity {
-        return new RoomEntity({
-            id: this.id,
-            users: this.users,
-            name: this.name,
-            photo: this.photo,
-            lastChatPreview: this.lastChatPreview,
-            lastChatUpdate: this.lastChatUpdate
+    toDocument(): Record<string, any> {
+        return {
+            'id': this.id,
+            'users': this.users,
+            'name': this.name,
+            'photo': this.photo,
+            'lastChatPreview': this.lastChatPreview,
+            'lastChatUpdate': this.lastChatUpdate,
+        };
+    }
+
+    static fromDocument(doc: Record<string, any>): RoomModel {
+        return new RoomModel({
+            id: doc['id'] as string,
+            users: doc['users'] as { [key: string]: {status: UserInRoomStatus; updatedAt: Date;} },
+            name: doc['name'] as string,
+            photo: doc['photo'] as string,
+            lastChatPreview: doc['lastChatPreview'] as string,
+            lastChatUpdate: doc['lastChatUpdate'] as Date,
         });
     }
 
-    static fromEntity(entity: RoomEntity): RoomModel {
-        return new RoomModel({
-            id: entity.id,
-            users: entity.users,
-            name: entity.name,
-            photo: entity.photo,
-            lastChatPreview: entity.lastChatPreview,
-            lastChatUpdate: entity.lastChatUpdate
-        });
+    toString(): string {
+        return `RoomEntity: {
+        id: ${this.id},
+        users: ${this.users},
+        name: ${this.name},
+        photo: ${this.photo},
+        lastChatPreview: ${this.lastChatPreview},
+        lastChatUpdate: ${this.lastChatUpdate},
+      }`;
     }
 }

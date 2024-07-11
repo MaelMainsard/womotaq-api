@@ -1,5 +1,4 @@
 import {RelationshipInterface} from "./relationship.interface";
-import {RelationshipEntity} from "./relationship.entity";
 import {UserInRelationshipStatus} from "../../enums/userInRelationshipStatus.enum";
 
 export class RelationshipModel implements RelationshipInterface{
@@ -13,19 +12,27 @@ export class RelationshipModel implements RelationshipInterface{
         this.lastChatUpdate = lastChatUpdate;
     }
 
-    toEntity(): RelationshipEntity {
-        return new RelationshipEntity({
-            users: this.users,
-            lastUserStatusUpdate: this.lastUserStatusUpdate,
-            lastChatUpdate: this.lastChatUpdate
+    toDocument(): Record<string, any> {
+        return {
+            'users': this.users,
+            'lastUserStatusUpdate': this.lastUserStatusUpdate,
+            'lastChatUpdate': this.lastChatUpdate,
+        };
+    }
+
+    static fromDocument(doc: Record<string, any>): RelationshipModel {
+        return new RelationshipModel({
+            users: doc['users'] as { [key: string]: UserInRelationshipStatus },
+            lastUserStatusUpdate: doc['lastUserStatusUpdate'] as Date,
+            lastChatUpdate: doc['lastChatUpdate'] as Date
         });
     }
 
-    static fromEntity(entity: RelationshipEntity): RelationshipModel {
-        return new RelationshipModel({
-            users: entity.users,
-            lastUserStatusUpdate: entity.lastUserStatusUpdate,
-            lastChatUpdate: entity.lastChatUpdate
-        });
+    toString(): string {
+        return `RelationshipEntity: {
+        users: ${JSON.stringify(this.users)},
+        lastUserStatusUpdate: ${this.lastUserStatusUpdate},
+        lastChatUpdate: ${this.lastChatUpdate},
+      }`;
     }
 }
