@@ -1,15 +1,16 @@
 import { MessageType } from '../../enums/messageType.enum';
 import {MessagePlace} from "../../enums/messagePlace.enum";
+import {MessageUtil} from "../../utils/message.util";
 
 export class MessageModel {
     id: string | null;
-    replyTo: string | null; // If this message is not a reply : Field is null.
+    replyTo: string | null;
     groupId: string;
     authorId: string;
     type: MessageType;
     place: MessagePlace;
     text: string;
-    sentAt: string;
+    sentAt: Date;
     sentTo: string[];
     deliveredTo: string[];
     seenBy: string[];
@@ -22,7 +23,7 @@ export class MessageModel {
         type:MessageType,
         place:MessagePlace,
         text:string,
-        sentAt:string,
+        sentAt:Date,
         sentTo:string[],
         deliveredTo:string[],
         seenBy:string[]
@@ -65,7 +66,7 @@ export class MessageModel {
             doc['type'] as MessageType,
             doc['place'] as MessagePlace,
             doc['text'] as string,
-            doc['sentAt'] as string,
+            doc['sentAt'] as Date,
             doc['sentTo'] as string[],
             doc['deliveredTo'] as string[],
             doc['seenBy'] as string[]
@@ -86,6 +87,23 @@ export class MessageModel {
         deliveredTo: ${this.deliveredTo},
         seenBy: ${this.seenBy},
       }`;
+    }
+
+    static fromInsertReq(req: Request): MessageModel{
+        const data: any = req.body;
+        return new MessageModel(
+            null,
+            data.replyTo === undefined ? null : data.replyTo,
+            data.groupId,
+            data.authorId,
+            MessageUtil.getMessageType(data.text),
+            data.place,
+            data.text,
+            new Date(),
+            [],
+            [],
+            []
+        );
     }
 
 }
