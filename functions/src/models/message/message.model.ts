@@ -10,6 +10,7 @@ export class MessageModel {
     type: MessageType;
     place: MessagePlace;
     text: string;
+    mediaUrl: string | null;
     sentAt: Date;
     sentTo: string[];
     deliveredTo: string[];
@@ -23,6 +24,7 @@ export class MessageModel {
         type:MessageType,
         place:MessagePlace,
         text:string,
+        mediaUrl: string | null,
         sentAt:Date,
         sentTo:string[],
         deliveredTo:string[],
@@ -35,6 +37,7 @@ export class MessageModel {
         this.type = type;
         this.place = place;
         this.text = text;
+        this.mediaUrl = mediaUrl;
         this.sentAt = sentAt;
         this.sentTo = sentTo;
         this.deliveredTo = deliveredTo;
@@ -50,6 +53,7 @@ export class MessageModel {
             doc['type'] as MessageType,
             doc['place'] as MessagePlace,
             doc['text'] as string,
+            doc['mediaUrl'] as string | null,
             doc['sentAt'] as Date,
             doc['sentTo'] as string[],
             doc['deliveredTo'] as string[],
@@ -63,6 +67,7 @@ export class MessageModel {
             'authorId': this.authorId,
             'type': this.type,
             'text': this.text,
+            'mediaUrl': this.mediaUrl,
             'sentAt': this.sentAt,
             'sentTo': this.sentTo,
             'deliveredTo': this.deliveredTo,
@@ -79,6 +84,7 @@ export class MessageModel {
             dto.type,
             dto.place,
             dto.text,
+            dto.mediaUrl,
             new Date(),
             [],
             [],
@@ -95,6 +101,7 @@ export class MessageModel {
         type: ${this.type},
         place: ${this.place},
         text: ${this.text},
+        mediaUrl: ${this.mediaUrl},
         sentAt: ${this.sentAt},
         sentTo: ${this.sentTo},
         deliveredTo: ${this.deliveredTo},
