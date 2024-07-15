@@ -1,6 +1,6 @@
 import { MessageType } from '../../enums/messageType.enum';
 import {MessagePlace} from "../../enums/messagePlace.enum";
-import {MessageUtil} from "../../utils/message.util";
+import {NewMessageDto} from "../../dto/newMessage.dto";
 
 export class MessageModel {
     id: string | null;
@@ -41,27 +41,11 @@ export class MessageModel {
         this.seenBy = seenBy;
     }
 
-    toDocument(): Record<string, any> {
-        return {
-            'id': this.id,
-            'replyTo': this.replyTo,
-            'groupId': this.groupId,
-            'authorId': this.authorId,
-            'type': this.type,
-            'place': this.place,
-            'text': this.text,
-            'sentAt': this.sentAt,
-            'sentTo': this.sentTo,
-            'deliveredTo': this.deliveredTo,
-            'seenBy': this.seenBy
-        };
-    }
-
-    static fromDocument(doc: Record<string, any>): MessageModel {
+    static fromDocument(docId:string, groupId:string, doc: Record<string, any>): MessageModel {
         return new MessageModel(
-            doc['id'] as string,
+            docId,
             doc['replyTo'] as string | null,
-            doc['groupId'] as string,
+            groupId,
             doc['authorId'] as string,
             doc['type'] as MessageType,
             doc['place'] as MessagePlace,
@@ -70,6 +54,35 @@ export class MessageModel {
             doc['sentTo'] as string[],
             doc['deliveredTo'] as string[],
             doc['seenBy'] as string[]
+        );
+    }
+
+    toDocument(): Record<string, any> {
+        return {
+            'replyTo': this.replyTo,
+            'authorId': this.authorId,
+            'type': this.type,
+            'text': this.text,
+            'sentAt': this.sentAt,
+            'sentTo': this.sentTo,
+            'deliveredTo': this.deliveredTo,
+            'seenBy': this.seenBy
+        };
+    }
+
+    static fromNewMessageDto(dto: NewMessageDto): MessageModel{
+        return new MessageModel(
+            null,
+            null,
+            dto.groupId,
+            dto.authorId,
+            dto.type,
+            dto.place,
+            dto.text,
+            new Date(),
+            [],
+            [],
+            []
         );
     }
 
@@ -89,21 +102,5 @@ export class MessageModel {
       }`;
     }
 
-    static fromInsertReq(req: Request): MessageModel{
-        const data: any = req.body;
-        return new MessageModel(
-            null,
-            data.replyTo === undefined ? null : data.replyTo,
-            data.groupId,
-            data.authorId,
-            MessageUtil.getMessageType(data.text),
-            data.place,
-            data.text,
-            new Date(),
-            [],
-            [],
-            []
-        );
-    }
 
 }
