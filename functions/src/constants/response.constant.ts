@@ -21,7 +21,7 @@ export const ResponseConstant = {
         };
     },
 
-    error(message:string, error:Error) {
+    error(message:string, error:any) {
         return {
             success: false,
             message,

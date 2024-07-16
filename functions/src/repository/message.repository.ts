@@ -21,15 +21,11 @@ export class MessageRepository {
     }
 
     async addNewMessage(message: MessageModel): Promise<MessageModel> {
-        try {
-            const doc: firestore.DocumentReference = this.messageCollection.doc();
-            await doc.set(message.toDocument());
-            const docSnapshot: firestore.DocumentSnapshot = await doc.get();
-            return MessageModel.fromDocument(doc.id,this.groupId,docSnapshot.data() as firestore.DocumentData);
-        } catch (error) {
-            throw error;
-        }
+        const doc: firestore.DocumentReference = this.messageCollection.doc();
+        await doc.set(message.toDocument());
+        //await doc.set(message);
+        const docSnapshot: firestore.DocumentSnapshot = await doc.get();
+        return MessageModel.fromDocument(doc.id,this.groupId,docSnapshot.data() as firestore.DocumentData);
     }
-
 
 }

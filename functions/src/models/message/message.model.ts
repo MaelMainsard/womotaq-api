@@ -1,6 +1,7 @@
 import { MessageType } from '../../enums/messageType.enum';
 import {MessagePlace} from "../../enums/messagePlace.enum";
 import {NewMessageDto} from "../../dto/newMessage.dto";
+import { firestore } from "firebase-admin";
 
 export class MessageModel {
     id: string | null;
@@ -47,14 +48,14 @@ export class MessageModel {
     static fromDocument(docId:string, groupId:string, doc: Record<string, any>): MessageModel {
         return new MessageModel(
             docId,
-            doc['replyTo'] as string | null,
+            doc['replyTo'] !== undefined ? (doc['replyTo'] as string) : null,
             groupId,
             doc['authorId'] as string,
             doc['type'] as MessageType,
             doc['place'] as MessagePlace,
             doc['text'] as string,
-            doc['mediaUrl'] as string | null,
-            doc['sentAt'] as Date,
+            doc['mediaUrl'] !== undefined ? (doc['mediaUrl'] as string) : null,
+            (doc['sentAt'] as firestore.Timestamp).toDate() as Date,
             doc['sentTo'] as string[],
             doc['deliveredTo'] as string[],
             doc['seenBy'] as string[]
@@ -63,11 +64,11 @@ export class MessageModel {
 
     toDocument(): Record<string, any> {
         return {
-            'replyTo': this.replyTo,
+            ...(this.replyTo !== null && { 'replyTo': this.replyTo }),
             'authorId': this.authorId,
             'type': this.type,
             'text': this.text,
-            'mediaUrl': this.mediaUrl,
+            ...(this.mediaUrl !== null && { 'mediaUrl': this.mediaUrl }),
             'sentAt': this.sentAt,
             'sentTo': this.sentTo,
             'deliveredTo': this.deliveredTo,
@@ -78,13 +79,13 @@ export class MessageModel {
     static fromNewMessageDto(dto: NewMessageDto): MessageModel{
         return new MessageModel(
             null,
-            null,
+            dto.replyTo === undefined ? null : dto.replyTo,
             dto.groupId,
             dto.authorId,
             dto.type,
             dto.place,
             dto.text,
-            dto.mediaUrl,
+            dto.mediaUrl === undefined ? null : dto.mediaUrl,
             new Date(),
             [],
             [],

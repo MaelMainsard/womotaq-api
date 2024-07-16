@@ -6,17 +6,17 @@ import {NewMessageDto} from "../dto/newMessage.dto";
 import {ResponseConstant} from "../constants/response.constant";
 import {MessageModel} from "../models/message/message.model";
 
-const router = Router();
+const router: Router = Router();
 const service: MessageService = new MessageService();
 
 router.post('/sendMessage',newMessageValidator(), validate, async (req: Request, res: Response) => {
-    const messageDto: NewMessageDto = req.body;
-    try{
+    try {
+        const messageDto: NewMessageDto = req.body;
+        console.log(messageDto);
         const response: MessageModel = await service.createMessage(messageDto);
         res.status(ResponseConstant.statusCodes.created).json(ResponseConstant.success("Message added successfully", response));
-    }
-    catch (err) {
-        res.status(ResponseConstant.statusCodes.internalServerError).json(err);
+    } catch (error){
+        res.status(ResponseConstant.statusCodes.internalServerError).json(ResponseConstant.internalServerError((error as Error).message));
     }
 });
 
