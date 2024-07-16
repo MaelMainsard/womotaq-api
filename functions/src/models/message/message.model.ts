@@ -1,7 +1,13 @@
 import { MessageType } from '../../enums/messageType.enum';
 import {MessagePlace} from "../../enums/messagePlace.enum";
+import {MessageStatus} from "../../enums/messageStatus.enum";
 import {NewMessageDto} from "../../dto/newMessage.dto";
 import { firestore } from "firebase-admin";
+
+interface UserStatus {
+    status: MessageStatus;
+    date: Date;
+}
 
 export class MessageModel {
     id: string | null;
@@ -13,9 +19,7 @@ export class MessageModel {
     text: string;
     mediaUrl: string | null;
     sentAt: Date;
-    sentTo: string[];
-    deliveredTo: string[];
-    seenBy: string[];
+    userStatus: Record<string, UserStatus>
 
     constructor(
         id:string | null,
@@ -27,9 +31,7 @@ export class MessageModel {
         text:string,
         mediaUrl: string | null,
         sentAt:Date,
-        sentTo:string[],
-        deliveredTo:string[],
-        seenBy:string[]
+        userStatus: Record<string, UserStatus>
     ) {
         this.id = id;
         this.replyTo = replyTo;
@@ -39,13 +41,22 @@ export class MessageModel {
         this.place = place;
         this.text = text;
         this.mediaUrl = mediaUrl;
-        this.sentAt = sentAt;
-        this.sentTo = sentTo;
-        this.deliveredTo = deliveredTo;
-        this.seenBy = seenBy;
+        this.sentAt = sentAt;Del
+        this.userStatus = userStatus;
     }
 
-    static fromDocument(docId:string, groupId:string, doc: Record<string, any>): MessageModel {
+    static fromDocument(docId: string, groupId: string, doc: Record<string, any>): MessageModel {
+        const userStatus: Record<string, UserStatus> = {};
+        if (doc['userStatus']) {
+            for (const [key, value] of Object.entries(doc['userStatus'])) {
+                if (typeof value === 'object' && value !== null && 'status' in value && 'date' in value) {
+                    userStatus[key] = {
+                        status: value.status as MessageStatus,
+                        date: (value.date as firestore.Timestamp).toDate()
+                    };
+                }
+            }
+        }
         return new MessageModel(
             docId,
             doc['replyTo'] !== undefined ? (doc['replyTo'] as string) : null,
@@ -55,10 +66,8 @@ export class MessageModel {
             doc['place'] as MessagePlace,
             doc['text'] as string,
             doc['mediaUrl'] !== undefined ? (doc['mediaUrl'] as string) : null,
-            (doc['sentAt'] as firestore.Timestamp).toDate() as Date,
-            doc['sentTo'] as string[],
-            doc['deliveredTo'] as string[],
-            doc['seenBy'] as string[]
+            (doc['sentAt'] as firestore.Timestamp).toDate(),
+            userStatus
         );
     }
 
@@ -70,9 +79,7 @@ export class MessageModel {
             'text': this.text,
             ...(this.mediaUrl !== null && { 'mediaUrl': this.mediaUrl }),
             'sentAt': this.sentAt,
-            'sentTo': this.sentTo,
-            'deliveredTo': this.deliveredTo,
-            'seenBy': this.seenBy
+            'userStatus': this.userStatus
         };
     }
 
@@ -87,9 +94,7 @@ export class MessageModel {
             dto.text,
             dto.mediaUrl === undefined ? null : dto.mediaUrl,
             new Date(),
-            [],
-            [],
-            []
+            {},
         );
     }
 
@@ -104,9 +109,7 @@ export class MessageModel {
         text: ${this.text},
         mediaUrl: ${this.mediaUrl},
         sentAt: ${this.sentAt},
-        sentTo: ${this.sentTo},
-        deliveredTo: ${this.deliveredTo},
-        seenBy: ${this.seenBy},
+        userStatus: ${this.userStatus}
       }`;
     }
 
