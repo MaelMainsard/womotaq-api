@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
+import {ResponseConstant} from "../constants/response.constant";
 
 
 export const validate = (req: Request, res: Response, next: NextFunction) => {
@@ -18,7 +19,5 @@ export const validate = (req: Request, res: Response, next: NextFunction) => {
         }
     });
 
-    return res.status(400).json({
-        errors: extractedErrors,
-    });
+    return res.status(ResponseConstant.statusCodes.badRequest).json(ResponseConstant.error("Bad request",extractedErrors));
 };

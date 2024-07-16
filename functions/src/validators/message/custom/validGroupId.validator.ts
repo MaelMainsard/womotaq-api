@@ -1,6 +1,6 @@
-import {RelationshipRepository} from "../repository/relationship.repository";
-import {RoomRepository} from "../repository/room.repository";
-import {MessagePlace} from "../enums/messagePlace.enum";
+import {RelationshipRepository} from "../../../repository/relationship.repository";
+import {RoomRepository} from "../../../repository/room.repository";
+import {MessagePlace} from "../../../enums/messagePlace.enum";
 
 export const validGroupId = async (value:any, { req }: {req: any}) => {
     const relationRepo:RelationshipRepository = new RelationshipRepository();

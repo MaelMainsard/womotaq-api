@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { validate } from '../middleware/validator.middleware';
-import {newMessageValidator} from "../validators/newMessage.validator";
+import {newMessageValidator} from "../validators/message/newMessage.validator";
 import {MessageService} from "../service/message.service";
 import {NewMessageDto} from "../dto/newMessage.dto";
 import {ResponseConstant} from "../constants/response.constant";

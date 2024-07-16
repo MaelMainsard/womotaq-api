@@ -1,4 +1,4 @@
-import {UserRepository} from "../repository/user.repository";
+import {UserRepository} from "../../../repository/user.repository";
 
 export const validAuthorId = async (authorId: string) => {
     if(typeof authorId !== "string" || authorId === "" || authorId === null) {

@@ -28,7 +28,6 @@ export class MessageRepository {
             date: new Date(),
         }
         await doc.set(message.toDocument());
-        //await doc.set(message);
         const docSnapshot: firestore.DocumentSnapshot = await doc.get();
         return MessageModel.fromDocument(doc.id,this.groupId,docSnapshot.data() as firestore.DocumentData);
     }

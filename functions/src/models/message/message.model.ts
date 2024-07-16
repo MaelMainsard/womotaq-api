@@ -41,7 +41,7 @@ export class MessageModel {
         this.place = place;
         this.text = text;
         this.mediaUrl = mediaUrl;
-        this.sentAt = sentAt;Del
+        this.sentAt = sentAt;
         this.userStatus = userStatus;
     }
 
